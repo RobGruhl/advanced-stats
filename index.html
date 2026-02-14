@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Expected Value vs Win Probability</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  h2 { font-size: 1.15rem; margin-bottom: 12px; color: #333; }
+  .subtitle { color: #666; margin-bottom: 32px; font-size: 0.95rem; }
+
+  .section { margin-bottom: 40px; }
+
+  /* Colors */
+  :root {
+    --a: #3b82f6;
+    --a-light: #93bbfd;
+    --b: #f59e0b;
+    --b-light: #fcd68d;
+    --gray: #d1d5db;
+    --gray-dark: #6b7280;
+  }
+
+  /* --- Dice Distribution Charts --- */
+  .distributions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 500px) { .distributions { grid-template-columns: 1fr; } }
+
+  .die-chart { text-align: center; }
+  .die-chart h3 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .die-chart h3.die-a { color: var(--a); }
+  .die-chart h3.die-b { color: var(--b); }
+
+  .bar-area {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 12px;
+    height: 120px;
+    margin-bottom: 4px;
+  }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .bar {
+    width: 48px;
+    border-radius: 4px 4px 0 0;
+    transition: height 0.3s;
+  }
+  .bar.a-color { background: var(--a); }
+  .bar.b-color { background: var(--b); }
+  .bar.h40 { height: 40px; }
+  .bar.h80 { height: 80px; }
+  .bar-label { font-size: 0.8rem; color: #555; }
+  .bar-pct { font-size: 0.75rem; color: #888; }
+  .ev-label { font-size: 0.85rem; color: #555; margin-top: 6px; }
+
+  /* --- Matchup Grid --- */
+  .grid-wrapper { overflow-x: auto; }
+
+  table.matchup {
+    border-collapse: collapse;
+    margin: 0 auto;
+  }
+  table.matchup th, table.matchup td {
+    width: 52px; height: 44px;
+    text-align: center;
+    font-size: 0.82rem;
+    border: 1px solid #e5e7eb;
+  }
+  table.matchup th {
+    background: #f9fafb;
+    font-weight: 600;
+    color: #555;
+  }
+  table.matchup th.col-header { color: var(--b); }
+  table.matchup th.row-header { color: var(--a); }
+  table.matchup td.a-win { background: var(--a-light); color: #1e3a5f; }
+  table.matchup td.b-win { background: var(--b-light); color: #78350f; }
+  table.matchup td.tie   { background: var(--gray); color: #374151; }
+  table.matchup td.summary { background: #f3f4f6; font-weight: 600; }
+
+  .grid-summary {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  .grid-summary span.a-count { color: var(--a); font-weight: 700; }
+  .grid-summary span.b-count { color: var(--b); font-weight: 700; }
+
+  #tooltip {
+    position: fixed;
+    background: #1a1a1a;
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+    z-index: 10;
+    white-space: nowrap;
+  }
+
+  /* --- Simulation --- */
+  .sim-controls {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  button {
+    padding: 8px 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  button:hover { background: #f3f4f6; }
+  button:active { background: #e5e7eb; }
+  button.primary { background: var(--b); color: #fff; border-color: var(--b); }
+  button.primary:hover { background: #d97706; }
+
+  .sim-result {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .dice-display {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    min-height: 80px;
+  }
+  .die-face {
+    width: 64px; height: 64px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+    transition: transform 0.15s;
+  }
+  .die-face.a { background: var(--a); }
+  .die-face.b { background: var(--b); }
+  .die-face.pop { transform: scale(1.15); }
+  .vs { font-weight: 700; color: #999; font-size: 1.1rem; }
+
+  .roll-outcome {
+    font-size: 0.9rem;
+    margin-top: 6px;
+    min-height: 1.4em;
+    color: #555;
+  }
+
+  .tally {
+    font-size: 0.9rem;
+    line-height: 1.8;
+  }
+  .tally .num { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .tally .num.a { color: var(--a); }
+  .tally .num.b { color: var(--b); }
+
+  .pct-bar-wrap {
+    width: 100%;
+    max-width: 340px;
+    height: 20px;
+    background: var(--a-light);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .pct-bar-fill {
+    height: 100%;
+    width: 50%;
+    background: var(--b);
+    border-radius: 10px;
+    transition: width 0.1s;
+  }
+  .convergence-note {
+    font-size: 0.8rem;
+    color: #999;
+    margin-top: 4px;
+  }
+  .outcome-a { color: var(--a); }
+  .outcome-b { color: var(--b); }
+
+  .insight-box {
+    margin-top: 32px;
+    padding: 16px 20px;
+    border-left: 4px solid var(--b);
+    background: #fffbeb;
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+    color: #78350f;
+  }
+  .insight-box strong { color: #92400e; }
+</style>
+</head>
+<body>
+
+<h1>Expected Value vs Win Probability</h1>
+<p class="subtitle">Why the "better" die doesn't always win head-to-head.</p>
+
+<!-- Section 1: Distributions -->
+<div class="section">
+  <h2>Dice Face Distributions</h2>
+  <div class="distributions">
+    <div class="die-chart">
+      <h3 class="die-a">Die A &mdash; {0, 0, 9, 9, 9, 9}</h3>
+      <div class="bar-area">
+        <div class="bar-col">
+          <div class="bar-pct">33%</div>
+          <div class="bar a-color h40"></div>
+          <div class="bar-label">0</div>
+        </div>
+        <div class="bar-col">
+          <div class="bar-pct">67%</div>
+          <div class="bar a-color h80"></div>
+          <div class="bar-label">9</div>
+        </div>
+      </div>
+      <div class="ev-label">E[A] = <strong>6.00</strong></div>
+    </div>
+    <div class="die-chart">
+      <h3 class="die-b">Die B &mdash; {3, 3, 3, 3, 11, 11}</h3>
+      <div class="bar-area">
+        <div class="bar-col">
+          <div class="bar-pct">67%</div>
+          <div class="bar b-color h80"></div>
+          <div class="bar-label">3</div>
+        </div>
+        <div class="bar-col">
+          <div class="bar-pct">33%</div>
+          <div class="bar b-color h40"></div>
+          <div class="bar-label">11</div>
+        </div>
+      </div>
+      <div class="ev-label">E[B] = <strong>5.67</strong></div>
+    </div>
+  </div>
+</div>
+
+<!-- Section 2: Matchup Grid -->
+<div class="section">
+  <h2>Head-to-Head Matchup Grid</h2>
+  <div class="grid-wrapper">
+    <table class="matchup" id="matchupGrid"></table>
+  </div>
+  <div class="grid-summary" id="gridSummary"></div>
+</div>
+
+<!-- Section 3: Simulation -->
+<div class="section">
+  <h2>Simulation</h2>
+  <div class="sim-controls">
+    <button id="btnRoll1">Roll Once</button>
+    <button id="btnRoll100">Roll 100</button>
+    <button class="primary" id="btnRoll1000">Roll 1,000</button>
+    <button id="btnReset">Reset</button>
+  </div>
+  <div class="sim-result">
+    <div>
+      <div class="dice-display">
+        <div class="die-face a" id="dieFaceA">?</div>
+        <div class="vs">vs</div>
+        <div class="die-face b" id="dieFaceB">?</div>
+      </div>
+      <div class="roll-outcome" id="rollOutcome"></div>
+    </div>
+    <div class="tally" id="tallyArea">
+      <div>Rolls: <span class="num" id="totalRolls">0</span></div>
+      <div>A wins: <span class="num a" id="aWins">0</span> (<span id="aPct">0.0</span>%)</div>
+      <div>B wins: <span class="num b" id="bWins">0</span> (<span id="bPct">0.0</span>%)</div>
+      <div>Ties: <span class="num" id="ties">0</span></div>
+      <div class="pct-bar-wrap">
+        <div class="pct-bar-fill" id="pctBar"></div>
+      </div>
+      <div class="convergence-note">Theoretical: B wins 55.6%</div>
+    </div>
+  </div>
+</div>
+
+<div class="insight-box">
+  <strong>The takeaway:</strong> Die A has the higher expected value (6.0 vs 5.67), yet Die B wins 55.6% of head-to-head rolls. Expected value tells you about the long-run <em>average</em>, not about who wins a comparison. Die A's two 0s are dead weight &mdash; they lose to <em>everything</em> on Die B.
+</div>
+
+<div id="tooltip"></div>
+
+<script>
+const DIE_A = [0, 0, 9, 9, 9, 9];
+const DIE_B = [3, 3, 3, 3, 11, 11];
+
+// --- Matchup Grid ---
+(function buildGrid() {
+  const table = document.getElementById('matchupGrid');
+  let aWinCount = 0, bWinCount = 0, tieCount = 0;
+
+  // Header row
+  let headerRow = '<tr><th></th>';
+  for (const b of DIE_B) headerRow += `<th class="col-header">${b}</th>`;
+  headerRow += '<th>A wins</th></tr>';
+  table.innerHTML = headerRow;
+
+  // Data rows
+  for (let i = 0; i < DIE_A.length; i++) {
+    let rowAWins = 0;
+    let row = `<tr><th class="row-header">${DIE_A[i]}</th>`;
+    for (let j = 0; j < DIE_B.length; j++) {
+      const a = DIE_A[i], b = DIE_B[j];
+      let cls, label;
+      if (a > b)      { cls = 'a-win'; label = 'A'; aWinCount++; rowAWins++; }
+      else if (b > a)  { cls = 'b-win'; label = 'B'; bWinCount++; }
+      else             { cls = 'tie';   label = '='; tieCount++; rowAWins += 0; }
+      row += `<td class="${cls}" data-tip="${a} vs ${b} &rarr; ${a > b ? 'A wins' : b > a ? 'B wins' : 'Tie'}">${label}</td>`;
+    }
+    row += `<td class="summary">${rowAWins}/6</td></tr>`;
+    table.innerHTML += row;
+  }
+
+  // Summary row
+  let sumRow = '<tr><th>B wins</th>';
+  for (let j = 0; j < DIE_B.length; j++) {
+    let colBWins = 0;
+    for (let i = 0; i < DIE_A.length; i++) {
+      if (DIE_B[j] > DIE_A[i]) colBWins++;
+    }
+    sumRow += `<td class="summary">${colBWins}/6</td>`;
+  }
+  sumRow += '<td class="summary"></td></tr>';
+  table.innerHTML += sumRow;
+
+  document.getElementById('gridSummary').innerHTML =
+    `Out of 36 outcomes: <span class="a-count">A wins ${aWinCount}</span> &nbsp;|&nbsp; ` +
+    `<span class="b-count">B wins ${bWinCount}</span> &nbsp;|&nbsp; Ties ${tieCount}`;
+})();
+
+// --- Tooltip ---
+const tooltip = document.getElementById('tooltip');
+document.querySelector('.matchup').addEventListener('mouseover', e => {
+  const tip = e.target.dataset.tip;
+  if (tip) {
+    tooltip.innerHTML = tip;
+    tooltip.style.opacity = '1';
+  }
+});
+document.querySelector('.matchup').addEventListener('mousemove', e => {
+  tooltip.style.left = (e.clientX + 12) + 'px';
+  tooltip.style.top  = (e.clientY - 32) + 'px';
+});
+document.querySelector('.matchup').addEventListener('mouseout', () => {
+  tooltip.style.opacity = '0';
+});
+
+// --- Simulation ---
+let simState = { aWins: 0, bWins: 0, ties: 0, total: 0 };
+
+function rollDie(faces) {
+  return faces[Math.floor(Math.random() * faces.length)];
+}
+
+function updateDisplay(aFace, bFace, showFaces) {
+  const elA = document.getElementById('dieFaceA');
+  const elB = document.getElementById('dieFaceB');
+  const outcome = document.getElementById('rollOutcome');
+
+  if (showFaces) {
+    elA.textContent = aFace;
+    elB.textContent = bFace;
+    elA.classList.add('pop');
+    elB.classList.add('pop');
+    setTimeout(() => { elA.classList.remove('pop'); elB.classList.remove('pop'); }, 150);
+
+    if (aFace > bFace) outcome.innerHTML = `<span class="outcome-a">A wins!</span> (${aFace} > ${bFace})`;
+    else if (bFace > aFace) outcome.innerHTML = `<span class="outcome-b">B wins!</span> (${bFace} > ${aFace})`;
+    else outcome.textContent = `Tie! (${aFace} = ${bFace})`;
+  }
+
+  document.getElementById('totalRolls').textContent = simState.total;
+  document.getElementById('aWins').textContent = simState.aWins;
+  document.getElementById('bWins').textContent = simState.bWins;
+  document.getElementById('ties').textContent  = simState.ties;
+
+  const aPct = simState.total ? (simState.aWins / simState.total * 100) : 0;
+  const bPct = simState.total ? (simState.bWins / simState.total * 100) : 0;
+  document.getElementById('aPct').textContent = aPct.toFixed(1);
+  document.getElementById('bPct').textContent = bPct.toFixed(1);
+  document.getElementById('pctBar').style.width = (simState.total ? bPct : 50) + '%';
+}
+
+function doOneRoll() {
+  const a = rollDie(DIE_A);
+  const b = rollDie(DIE_B);
+  if (a > b) simState.aWins++;
+  else if (b > a) simState.bWins++;
+  else simState.ties++;
+  simState.total++;
+  return [a, b];
+}
+
+function rollOnce() {
+  const [a, b] = doOneRoll();
+  updateDisplay(a, b, true);
+}
+
+function rollMany(n) {
+  const batchSize = 50;
+  let done = 0;
+  let lastA, lastB;
+
+  function step() {
+    const chunk = Math.min(batchSize, n - done);
+    for (let i = 0; i < chunk; i++) {
+      [lastA, lastB] = doOneRoll();
+    }
+    done += chunk;
+    updateDisplay(lastA, lastB, true);
+    if (done < n) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+function resetSim() {
+  simState = { aWins: 0, bWins: 0, ties: 0, total: 0 };
+  document.getElementById('dieFaceA').textContent = '?';
+  document.getElementById('dieFaceB').textContent = '?';
+  document.getElementById('rollOutcome').textContent = '';
+  updateDisplay(null, null, false);
+}
+
+// Bind buttons via addEventListener (inline onclick blocked by iMessage CSP)
+document.getElementById('btnRoll1').addEventListener('click', rollOnce);
+document.getElementById('btnRoll100').addEventListener('click', function() { rollMany(100); });
+document.getElementById('btnRoll1000').addEventListener('click', function() { rollMany(1000); });
+document.getElementById('btnReset').addEventListener('click', resetSim);
+</script>
+</body>
+</html>
