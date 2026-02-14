@@ -323,6 +323,236 @@
   .n-door-val { font-size: 0.9rem; font-variant-numeric: tabular-nums; }
   .n-door-result { font-size: 1rem; margin-top: 8px; }
   .n-door-result .big-frac { font-size: 1.8rem; font-weight: 800; color: var(--green); }
+
+  /* ===== MTG Draft EV Page ===== */
+  .ev-positive { color: var(--green); font-weight: 700; }
+  .ev-negative { color: var(--red); font-weight: 700; }
+
+  .prize-table { border-collapse: collapse; width: 100%; max-width: 400px; margin: 12px 0; }
+  .prize-table th, .prize-table td { padding: 8px 12px; text-align: right; border: 1px solid #e5e7eb; font-size: 0.9rem; }
+  .prize-table th { background: #f9fafb; font-weight: 600; color: #555; text-align: left; }
+  .prize-table td:first-child { text-align: left; font-weight: 600; }
+  .prize-table tr.prize-highlight td { background: #fffbeb; }
+
+  .mtg-ev-display {
+    text-align: center;
+    margin: 24px 0;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+  }
+  .mtg-ev-display .ev-amount {
+    font-size: 2.4rem;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+  .mtg-ev-display .ev-label {
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 4px;
+  }
+
+  .mtg-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin: 16px 0;
+  }
+  .mtg-slider-row label { font-weight: 600; font-size: 0.95rem; }
+  .mtg-slider-row input[type="range"] { width: 280px; }
+  .mtg-slider-val { font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 48px; }
+
+  .mtg-breakeven-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    background: var(--green-light);
+    color: #065f46;
+    font-weight: 700;
+    font-size: 1rem;
+    margin: 8px 0;
+  }
+
+  .outcome-bars { margin: 16px 0; }
+  .outcome-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+  }
+  .outcome-bar-label {
+    width: 52px;
+    text-align: right;
+    font-weight: 600;
+    color: #555;
+    white-space: nowrap;
+  }
+  .outcome-bar-track {
+    flex: 1;
+    max-width: 360px;
+    height: 22px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  .outcome-bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.2s;
+    min-width: 1px;
+  }
+  .outcome-bar-val {
+    font-variant-numeric: tabular-nums;
+    min-width: 52px;
+    color: #555;
+  }
+  .outcome-bar-prize {
+    font-variant-numeric: tabular-nums;
+    min-width: 60px;
+    color: #888;
+    font-size: 0.8rem;
+  }
+
+  .mtg-ref-table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  .mtg-ref-table th, .mtg-ref-table td { padding: 8px 12px; text-align: right; border: 1px solid #e5e7eb; font-size: 0.88rem; }
+  .mtg-ref-table th { background: #f9fafb; font-weight: 600; color: #555; text-align: right; }
+  .mtg-ref-table th:first-child, .mtg-ref-table td:first-child { text-align: left; }
+  .mtg-ref-table tr.ref-breakeven td { background: var(--green-light); font-weight: 700; }
+  .mtg-ref-table tr.ref-negative td:nth-child(3),
+  .mtg-ref-table tr.ref-negative td:nth-child(4) { color: var(--red); }
+  .mtg-ref-table tr.ref-positive td:nth-child(3),
+  .mtg-ref-table tr.ref-positive td:nth-child(4) { color: var(--green); }
+
+  /* ===== MTG Strength of Schedule ===== */
+  table.sos-grid { border-collapse: collapse; margin: 12px auto; }
+  table.sos-grid th, table.sos-grid td {
+    padding: 6px 14px; text-align: center; border: 1px solid #e5e7eb;
+    font-size: 0.85rem; font-variant-numeric: tabular-nums;
+  }
+  table.sos-grid th { background: #f9fafb; font-weight: 600; color: #555; }
+  table.sos-grid .sos-delta { font-size: 0.72rem; color: #999; display: block; }
+
+  .sos-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 20px 0;
+  }
+  @media (max-width: 500px) { .sos-compare { grid-template-columns: 1fr; } }
+  .sos-box {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .sos-box h3 { font-size: 0.95rem; margin-bottom: 8px; color: #555; }
+  .sos-box .sos-ev { font-size: 1.8rem; font-weight: 800; }
+  .sos-box .sos-detail { font-size: 0.85rem; color: #666; margin-top: 6px; line-height: 1.6; }
+
+  /* ===== Baccarat Page ===== */
+  .bacc-card {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 66px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    font-weight: 700;
+    margin: 0 2px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
+  .bacc-card .card-rank { font-size: 1rem; line-height: 1.1; }
+  .bacc-card .card-suit { font-size: 0.85rem; line-height: 1.1; }
+  .bacc-card.card-red { color: #dc2626; }
+  .bacc-card.card-black { color: #1a1a1a; }
+  .bacc-card.card-third { border-color: var(--b); box-shadow: 0 0 0 2px var(--b-light); }
+
+  .bacc-hand-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+    flex-wrap: wrap;
+  }
+  .bacc-hand-label { font-weight: 700; width: 70px; font-size: 0.95rem; }
+  .bacc-hand-label.player-label { color: var(--a); }
+  .bacc-hand-label.banker-label { color: var(--red); }
+  .bacc-hand-cards { display: flex; align-items: center; gap: 4px; }
+  .bacc-hand-total { font-weight: 800; font-size: 1.3rem; min-width: 24px; }
+
+  .bacc-bets-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  @media (max-width: 560px) { .bacc-bets-grid { grid-template-columns: 1fr; } }
+  .bacc-bet-box {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .bacc-bet-box h3 { font-size: 1rem; margin-bottom: 4px; }
+  .bacc-bet-box .bet-payout { font-size: 0.85rem; color: #888; margin-bottom: 8px; }
+  .bacc-bet-box .bet-edge { font-size: 2rem; font-weight: 800; margin: 6px 0; }
+  .bacc-bet-box .bet-detail { font-size: 0.82rem; color: #666; line-height: 1.5; }
+  .bacc-bet-box.player-box { border-color: var(--a); }
+  .bacc-bet-box.player-box h3, .bacc-bet-box.player-box .bet-edge { color: var(--a); }
+  .bacc-bet-box.banker-box { border-color: var(--red); }
+  .bacc-bet-box.banker-box h3, .bacc-bet-box.banker-box .bet-edge { color: var(--red); }
+  .bacc-bet-box.tie-box { border-color: var(--gray-dark); }
+  .bacc-bet-box.tie-box h3, .bacc-bet-box.tie-box .bet-edge { color: var(--gray-dark); }
+
+  table.bacc-tableau { border-collapse: collapse; margin: 12px auto; }
+  table.bacc-tableau th, table.bacc-tableau td {
+    width: 36px; height: 32px; text-align: center;
+    font-size: 0.78rem; border: 1px solid #e5e7eb;
+  }
+  table.bacc-tableau th { background: #f9fafb; font-weight: 600; color: #555; }
+  table.bacc-tableau th.player-col { color: var(--a); }
+  table.bacc-tableau th.banker-row { color: var(--red); }
+  table.bacc-tableau td.draw-cell { background: var(--red-light); color: #991b1b; font-weight: 600; }
+  table.bacc-tableau td.stand-cell { background: #f9fafb; color: #bbb; }
+
+  .bacc-bet-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 16px 0; }
+  .bacc-game-area { margin: 16px 0; min-height: 80px; }
+  .bacc-result-msg { text-align: center; font-size: 1rem; min-height: 1.5em; margin: 12px 0; color: #333; }
+  .bacc-note { font-size: 0.88rem; color: #666; text-align: center; margin: 6px 0; font-style: italic; }
+
+  .bacc-sim-bars { margin-top: 16px; }
+  .bacc-sim-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+  }
+  .bacc-sim-label { width: 62px; text-align: right; font-weight: 600; }
+  .bacc-sim-track {
+    flex: 1;
+    max-width: 300px;
+    height: 18px;
+    background: #f3f4f6;
+    border-radius: 9px;
+    overflow: hidden;
+  }
+  .bacc-sim-inner {
+    height: 100%;
+    border-radius: 9px;
+    transition: width 0.15s;
+  }
+  .bacc-sim-inner.player-bar { background: var(--a); }
+  .bacc-sim-inner.banker-bar { background: var(--red); }
+  .bacc-sim-inner.tie-bar { background: var(--gray-dark); }
+  .bacc-sim-val { font-variant-numeric: tabular-nums; min-width: 80px; }
 </style>
 </head>
 <body>
@@ -331,6 +561,8 @@
 <nav class="tab-bar">
   <button class="tab-btn active" id="tabDice">Dice Matchup</button>
   <button class="tab-btn" id="tabMonty">Monty Hall</button>
+  <button class="tab-btn" id="tabMtg">MTG Draft EV</button>
+  <button class="tab-btn" id="tabBacc">Baccarat</button>
 </nav>
 
 <!-- ===================== PAGE 1: Dice ===================== -->
@@ -531,13 +763,226 @@
 
 </div><!-- /pageMonty -->
 
+<!-- ===================== PAGE 3: MTG Draft EV ===================== -->
+<div class="page" id="pageMtg">
+
+<h1>MTG Draft Tournament EV</h1>
+<p class="subtitle">At what win rate does a Premier Draft become profitable?</p>
+
+<!-- Section 1: Tournament Rules -->
+<div class="section">
+  <h2>Tournament Structure</h2>
+  <p style="color:#555; margin-bottom:12px;">Premier Draft costs <strong>$30</strong> to enter. You play until you hit <strong>7 wins</strong> or <strong>2 losses</strong>, whichever comes first. Prizes are paid in gems (convertible to cash), plus a $400 cash prize at 7 wins.</p>
+  <table class="prize-table">
+    <tr><th>Wins at Exit</th><th>Payout</th></tr>
+    <tr><td>0 wins</td><td>$0.00</td></tr>
+    <tr><td>1 win</td><td>$0.00</td></tr>
+    <tr><td>2 wins</td><td>$0.00</td></tr>
+    <tr><td>3 wins</td><td>$13.50</td></tr>
+    <tr><td>4 wins</td><td>$27.50</td></tr>
+    <tr><td>5 wins</td><td>$40.50</td></tr>
+    <tr><td>6 wins</td><td>$54.70</td></tr>
+    <tr class="prize-highlight"><td>7 wins</td><td>$400.00</td></tr>
+  </table>
+  <p style="color:#888; font-size:0.82rem;">Packs and drafted cards excluded &mdash; packs are earnable for free and have ambiguous resale value. This is liquid currency (gems/cash) only.</p>
+</div>
+
+<!-- Section 2: Win Rate → EV Calculator -->
+<div class="section">
+  <h2>Win Rate &rarr; Expected Value</h2>
+  <div class="mtg-slider-row">
+    <label for="mtgSlider">Per-game win rate:</label>
+    <input type="range" id="mtgSlider" min="30" max="90" value="50" step="1">
+    <span class="mtg-slider-val" id="mtgSliderVal">50%</span>
+  </div>
+
+  <div class="mtg-ev-display" id="mtgEvDisplay">
+    <div class="ev-amount" id="mtgEvAmount">...</div>
+    <div class="ev-label">Expected value per tournament (after $30 buy-in)</div>
+  </div>
+
+  <p style="text-align:center; margin-bottom:20px;">Breakeven win rate: <span class="mtg-breakeven-badge" id="mtgBreakeven">--</span></p>
+
+  <!-- Outcome distribution bars -->
+  <h2>Outcome Probabilities</h2>
+  <div class="outcome-bars" id="mtgOutcomeBars"></div>
+  <p style="font-size:0.82rem; color:#888; margin-top:4px;">Probabilities sum to 100%. Each bar shows the chance of exiting with that record.</p>
+</div>
+
+<!-- Section 3: Strength of Schedule -->
+<div class="section">
+  <h2>Strength of Schedule</h2>
+  <p style="color:#555; margin-bottom:12px;">In Premier Draft, you're matched against players with a similar record. At 6-0, your opponents are other 6-0 players &mdash; a substantially stronger field. This compresses your win rate toward 50% as you climb.</p>
+  <p style="color:#555; margin-bottom:16px; font-size:0.88rem;">Model: <strong>Beta(20, 20)</strong> skill distribution (std &asymp; 8%, consistent with Premier Draft skill ranges) with <strong>Bradley-Terry</strong> head-to-head matchups. The slider above controls your skill &mdash; your win rate against a median player.</p>
+
+  <h2 style="margin-top:24px;">Your Effective Win Rate by Record</h2>
+  <p style="color:#555; margin-bottom:8px; font-size:0.88rem;">How your per-game win probability changes as you progress. Delta shows the shift from your base skill.</p>
+  <div style="overflow-x:auto;">
+    <table class="sos-grid" id="sosGrid"></table>
+  </div>
+
+  <div class="sos-compare">
+    <div class="sos-box">
+      <h3>Simple Model (constant p)</h3>
+      <div class="sos-ev" id="sosNaiveEvBig">...</div>
+      <div class="sos-detail">
+        Assumes <span id="sosNaiveP">50%</span> win rate every game<br>
+        P(7 wins): <strong id="sosP7Naive">--</strong><br>
+        Breakeven: <strong id="sosNaiveBE">--</strong>
+      </div>
+    </div>
+    <div class="sos-box" id="sosAdjBox">
+      <h3>With Matchmaking (SoS)</h3>
+      <div class="sos-ev" id="sosAdjEvBig">...</div>
+      <div class="sos-detail">
+        Opponents get harder as your record improves<br>
+        P(7 wins): <strong id="sosP7Adj">--</strong><br>
+        Breakeven: <strong id="sosAdjBE">--</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-box green-box" style="margin-top:20px;">
+    <strong>The key effect:</strong> Strength of schedule compresses your win rate toward 50% as you accumulate wins. The $400 at 7 wins drives most of the EV, so even a small drop in your effective win rate at 5-0 and 6-0 has an outsized impact on expected value. Notice also that the 1-loss column has <em>higher</em> win rates &mdash; your opponents there include unlucky players, not just bad ones.
+  </div>
+</div>
+
+<!-- Section 4: Reference Table -->
+<div class="section">
+  <h2>How Good Are You?</h2>
+  <p style="color:#555; margin-bottom:12px;">Expected value per tournament and per game at common win rates.</p>
+  <div style="overflow-x:auto;">
+    <table class="mtg-ref-table" id="mtgRefTable"></table>
+  </div>
+
+  <div class="insight-box amber" style="margin-top:24px;">
+    <strong>The takeaway:</strong> The $400 at 7 wins does almost all the heavy lifting. At a 50% win rate you only reach 7 wins about 3.5% of the time, losing ~$8.70 per entry. You need to sustain roughly a 54% win rate just to break even on currency alone &mdash; and even then, your profit depends entirely on those rare 7-win runs.
+  </div>
+</div>
+
+</div><!-- /pageMtg -->
+
+<!-- ===================== PAGE 4: Baccarat ===================== -->
+<div class="page" id="pageBacc">
+
+<h1>Baccarat House Edge</h1>
+<p class="subtitle">The best bet in the casino is still a losing bet.</p>
+
+<!-- Section 1: How It Works -->
+<div class="section">
+  <h2>How Baccarat Works</h2>
+  <p style="color:#555; margin-bottom:12px;">Two hands are dealt &mdash; <strong style="color:var(--a)">Player</strong> and <strong style="color:var(--red)">Banker</strong>. Each gets two cards, sometimes a third. Closest to 9 wins. You bet on which side wins, or on a tie. Card values: A = 1, 2&ndash;9 = face value, 10/J/Q/K = 0. Only the last digit of the sum counts (e.g., 7 + 8 = 15 &rarr; 5).</p>
+  <p style="color:#555; margin-bottom:12px;">If either hand totals 8 or 9 on the first two cards, it's a <strong>natural</strong> &mdash; no more cards are dealt. Otherwise, fixed drawing rules determine whether a third card is drawn. You don't choose &mdash; the rules are automatic.</p>
+
+  <h2 style="margin-top:28px;">Third Card Rules</h2>
+  <p style="color:#555; margin-bottom:8px;"><strong style="color:var(--a)">Player</strong> draws on 0&ndash;5, stands on 6&ndash;7. Simple.</p>
+  <p style="color:#555; margin-bottom:8px;"><strong style="color:var(--red)">Banker</strong>&rsquo;s rule is more complex &mdash; it depends on the Player&rsquo;s third card:</p>
+  <div style="overflow-x:auto;">
+    <table class="bacc-tableau" id="baccTableau"></table>
+  </div>
+  <p style="font-size:0.82rem; color:#888; margin-top:4px; text-align:center;">When Player stands (6&ndash;7), Banker follows the same simple rule: draws on 0&ndash;5, stands on 6&ndash;7.</p>
+</div>
+
+<!-- Section 2: The Three Bets -->
+<div class="section">
+  <h2>The Three Bets</h2>
+  <p style="color:#555; margin-bottom:16px;">Standard 8-deck Punto Banco with 5% commission on Banker wins.</p>
+  <div class="bacc-bets-grid">
+    <div class="bacc-bet-box player-box">
+      <h3>Player</h3>
+      <div class="bet-payout">Pays 1 : 1</div>
+      <div class="bet-edge">1.24%</div>
+      <div class="bet-detail">Wins 44.62% of hands<br>House edge per $100: $1.24</div>
+    </div>
+    <div class="bacc-bet-box banker-box">
+      <h3>Banker</h3>
+      <div class="bet-payout">Pays 0.95 : 1</div>
+      <div class="bet-edge">1.06%</div>
+      <div class="bet-detail">Wins 45.86% of hands<br>House edge per $100: $1.06</div>
+    </div>
+    <div class="bacc-bet-box tie-box">
+      <h3>Tie</h3>
+      <div class="bet-payout">Pays 8 : 1</div>
+      <div class="bet-edge">14.36%</div>
+      <div class="bet-detail">Hits 9.52% of hands<br>House edge per $100: $14.36</div>
+    </div>
+  </div>
+
+  <div class="insight-box blue-box" style="margin-top:20px;">
+    <strong>Why is Banker better despite the commission?</strong> Banker acts <em>second</em> and its drawing rules use information from the Player's third card. This gives Banker a structural edge (45.86% vs 44.62%). The 5% commission exists precisely to tax that advantage &mdash; but even after the tax, Banker has the lowest house edge in the game.
+  </div>
+</div>
+
+<!-- Section 3: Deal a Hand -->
+<div class="section">
+  <h2>Deal a Hand</h2>
+  <p style="color:#555; margin-bottom:12px;">Place a $10 bet and watch the drawing rules in action.</p>
+  <div class="bacc-bet-btns" id="baccBetBtns">
+    <button id="baccBetPlayer" style="border-color:var(--a);color:var(--a);font-weight:600;">Bet Player</button>
+    <button id="baccBetBanker" style="border-color:var(--red);color:var(--red);font-weight:600;">Bet Banker</button>
+    <button id="baccBetTie" style="border-color:var(--gray-dark);color:var(--gray-dark);font-weight:600;">Bet Tie</button>
+  </div>
+  <div class="bacc-game-area" id="baccGameArea"></div>
+  <div class="bacc-note" id="baccNote"></div>
+  <div class="bacc-result-msg" id="baccResultMsg"></div>
+  <div style="text-align:center;" id="baccGameBtns"></div>
+  <div class="tally" style="text-align:center; margin-top:16px;" id="baccTally">
+    Hands: <span class="num" id="baccHands">0</span> &nbsp;|&nbsp;
+    Net: <span class="num" id="baccNet" style="color:var(--red);">$0.00</span> &nbsp;|&nbsp;
+    Player wins: <span class="num" style="color:var(--a)" id="baccPWins">0</span> &nbsp;|&nbsp;
+    Banker wins: <span class="num" style="color:var(--red)" id="baccBWins">0</span> &nbsp;|&nbsp;
+    Ties: <span class="num" id="baccTies">0</span>
+  </div>
+</div>
+
+<!-- Section 4: Simulation -->
+<div class="section">
+  <h2>Simulation: The Long Run</h2>
+  <p style="color:#555; margin-bottom:12px;">Three virtual players each bet $1 every hand &mdash; one on Player, one on Banker, one on Tie. Watch their bankrolls converge toward the theoretical house edge.</p>
+  <div class="sim-controls">
+    <button id="baccSim100">Deal 100</button>
+    <button class="primary" id="baccSim1k">Deal 1,000</button>
+    <button id="baccSim10k">Deal 10,000</button>
+    <button id="baccSimReset">Reset</button>
+  </div>
+  <div class="tally" id="baccSimTally">
+    Hands dealt: <span class="num" id="bsTotal">0</span>
+  </div>
+  <div class="bacc-sim-bars">
+    <div class="bacc-sim-row">
+      <span class="bacc-sim-label" style="color:var(--a)">Player</span>
+      <div class="bacc-sim-track"><div class="bacc-sim-inner player-bar" id="bsPlayerBar" style="width:0"></div></div>
+      <span class="bacc-sim-val" id="bsPlayerVal">$0 (0%)</span>
+    </div>
+    <div class="bacc-sim-row">
+      <span class="bacc-sim-label" style="color:var(--red)">Banker</span>
+      <div class="bacc-sim-track"><div class="bacc-sim-inner banker-bar" id="bsBankerBar" style="width:0"></div></div>
+      <span class="bacc-sim-val" id="bsBankerVal">$0 (0%)</span>
+    </div>
+    <div class="bacc-sim-row">
+      <span class="bacc-sim-label" style="color:var(--gray-dark)">Tie</span>
+      <div class="bacc-sim-track"><div class="bacc-sim-inner tie-bar" id="bsTieBar" style="width:0"></div></div>
+      <span class="bacc-sim-val" id="bsTieVal">$0 (0%)</span>
+    </div>
+  </div>
+  <div class="convergence-note">Theoretical: Player &minus;1.24% | Banker &minus;1.06% | Tie &minus;14.36%</div>
+
+  <div class="insight-box amber" style="margin-top:28px;">
+    <strong>The takeaway:</strong> Player and Banker bets have some of the lowest house edges in any casino game (~1%). But &ldquo;low edge&rdquo; still means the house wins over time. At 80 hands/hour with $25 bets, the Banker bet costs you about $21/hour on average. The Tie bet &mdash; despite the enticing 8:1 payout &mdash; bleeds 14&times; faster.
+  </div>
+</div>
+
+</div><!-- /pageBacc -->
+
 
 <script>
 // ==================== TAB NAVIGATION ====================
 (function() {
   var tabs = [
-    { btn: document.getElementById('tabDice'), page: document.getElementById('pageDice') },
-    { btn: document.getElementById('tabMonty'), page: document.getElementById('pageMonty') }
+    { btn: document.getElementById('tabDice'), page: document.getElementById('pageDice'), hash: '#dice' },
+    { btn: document.getElementById('tabMonty'), page: document.getElementById('pageMonty'), hash: '#monty' },
+    { btn: document.getElementById('tabMtg'), page: document.getElementById('pageMtg'), hash: '#mtg' },
+    { btn: document.getElementById('tabBacc'), page: document.getElementById('pageBacc'), hash: '#bacc' }
   ];
   tabs.forEach(function(t) {
     t.btn.addEventListener('click', function() {
@@ -552,9 +997,10 @@
   });
 
   // Support hash navigation
-  if (window.location.hash === '#monty') {
-    tabs[1].btn.click();
-  }
+  var hash = window.location.hash;
+  if (hash === '#monty') tabs[1].btn.click();
+  else if (hash === '#mtg') tabs[2].btn.click();
+  else if (hash === '#bacc') tabs[3].btn.click();
 })();
 
 
@@ -974,6 +1420,572 @@ document.getElementById('mhSim100').addEventListener('click', function() { runMH
 document.getElementById('mhSim1000').addEventListener('click', function() { runMHSim(1000); });
 document.getElementById('mhSim10k').addEventListener('click', function() { runMHSim(10000); });
 document.getElementById('mhSimReset').addEventListener('click', resetMHSim);
+
+
+// ==================== MTG DRAFT EV ====================
+(function() {
+  var BUYIN = 30;
+  var PRIZES = [0, 0, 0, 13.50, 27.50, 40.50, 54.70, 400.00];
+  // Bar colors gradient from red (0 wins) to gold (7 wins)
+  var BAR_COLORS = ['#ef4444', '#f87171', '#fb923c', '#f59e0b', '#84cc16', '#22c55e', '#10b981', '#0d9488'];
+
+  function comb(n, k) {
+    if (k < 0 || k > n) return 0;
+    if (k === 0 || k === n) return 1;
+    var r = 1;
+    for (var i = 0; i < k; i++) r = r * (n - i) / (i + 1);
+    return r;
+  }
+
+  // Returns array of 9 exit states: {wins, losses, prob, prize}
+  function calcOutcomeProbs(p) {
+    var q = 1 - p;
+    var outcomes = [];
+
+    // Exit at (w, 2) for w = 0..6: last game was loss #2
+    // Prior games: w+1 games with exactly w wins and 1 loss
+    for (var w = 0; w <= 6; w++) {
+      var prob = comb(w + 1, 1) * Math.pow(p, w) * Math.pow(q, 2);
+      outcomes.push({ wins: w, losses: 2, prob: prob, prize: PRIZES[w] });
+    }
+
+    // Exit at (7, 0): won all 7
+    outcomes.push({ wins: 7, losses: 0, prob: Math.pow(p, 7), prize: PRIZES[7] });
+
+    // Exit at (7, 1): last game was win #7, prior 7 games had 6 wins and 1 loss
+    outcomes.push({ wins: 7, losses: 1, prob: comb(7, 1) * Math.pow(p, 7) * q, prize: PRIZES[7] });
+
+    return outcomes;
+  }
+
+  function calcEV(p) {
+    var outcomes = calcOutcomeProbs(p);
+    var ev = 0;
+    for (var i = 0; i < outcomes.length; i++) ev += outcomes[i].prob * outcomes[i].prize;
+    return ev - BUYIN;
+  }
+
+  function findBreakeven() {
+    var lo = 0.30, hi = 0.95;
+    for (var i = 0; i < 100; i++) {
+      var mid = (lo + hi) / 2;
+      if (calcEV(mid) < 0) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  var breakeven = findBreakeven();
+
+  function renderMtg(p) {
+    var pFrac = p / 100;
+    var outcomes = calcOutcomeProbs(pFrac);
+    var ev = calcEV(pFrac);
+
+    // EV display
+    var evEl = document.getElementById('mtgEvAmount');
+    var evBox = document.getElementById('mtgEvDisplay');
+    var sign = ev >= 0 ? '+' : '-';
+    evEl.textContent = sign + '$' + Math.abs(ev).toFixed(2);
+    evEl.className = 'ev-amount ' + (ev >= 0 ? 'ev-positive' : 'ev-negative');
+    evBox.style.borderColor = ev >= 0 ? 'var(--green)' : 'var(--red)';
+
+    // Slider value
+    document.getElementById('mtgSliderVal').textContent = p + '%';
+
+    // Outcome bars
+    var maxProb = 0;
+    for (var i = 0; i < outcomes.length; i++) {
+      if (outcomes[i].prob > maxProb) maxProb = outcomes[i].prob;
+    }
+
+    var barsHtml = '';
+    for (var j = 0; j < outcomes.length; j++) {
+      var o = outcomes[j];
+      var label = o.wins + '-' + o.losses;
+      var pct = (o.prob * 100);
+      var barWidth = maxProb > 0 ? (o.prob / maxProb * 100) : 0;
+      var prizeStr = o.prize > 0 ? '$' + o.prize.toFixed(o.prize === 400 ? 0 : 2) : '$0';
+      barsHtml += '<div class="outcome-bar-row">' +
+        '<span class="outcome-bar-label">' + label + '</span>' +
+        '<div class="outcome-bar-track"><div class="outcome-bar-fill" style="width:' + barWidth.toFixed(1) + '%;background:' + BAR_COLORS[o.wins] + '"></div></div>' +
+        '<span class="outcome-bar-val">' + pct.toFixed(1) + '%</span>' +
+        '<span class="outcome-bar-prize">' + prizeStr + '</span>' +
+        '</div>';
+    }
+    document.getElementById('mtgOutcomeBars').innerHTML = barsHtml;
+  }
+
+  function buildRefTable() {
+    var rates = [40, 45, 50, 55, 60, 65, 70, 75, 80];
+    var beInt = Math.round(breakeven * 100);
+
+    var html = '<tr><th>Win Rate</th><th>Exp. Payout</th><th>EV / Tournament</th><th>EV / Game</th></tr>';
+    for (var i = 0; i < rates.length; i++) {
+      var r = rates[i];
+      var pFrac = r / 100;
+      var ev = calcEV(pFrac);
+      var payout = ev + BUYIN;
+      // Avg games per tournament for this win rate
+      var outcomes = calcOutcomeProbs(pFrac);
+      var avgGames = 0;
+      for (var j = 0; j < outcomes.length; j++) avgGames += outcomes[j].prob * (outcomes[j].wins + outcomes[j].losses);
+      var evPerGame = avgGames > 0 ? ev / avgGames : 0;
+
+      var sign = ev >= 0 ? '+' : '-';
+      var evStr = sign + '$' + Math.abs(ev).toFixed(2);
+      var gpSign = evPerGame >= 0 ? '+' : '-';
+      var gpStr = gpSign + '$' + Math.abs(evPerGame).toFixed(2);
+
+      var rowCls = '';
+      if (r === beInt) rowCls = 'ref-breakeven';
+      else if (ev < 0) rowCls = 'ref-negative';
+      else rowCls = 'ref-positive';
+
+      html += '<tr class="' + rowCls + '">' +
+        '<td>' + r + '%</td>' +
+        '<td>$' + payout.toFixed(2) + '</td>' +
+        '<td>' + evStr + '</td>' +
+        '<td>' + gpStr + '</td>' +
+        '</tr>';
+    }
+    document.getElementById('mtgRefTable').innerHTML = html;
+  }
+
+  // ===== Strength of Schedule Model =====
+  // Population: Beta(20,20), std ~8%. Bradley-Terry head-to-head.
+  var SOS_N = 150; // skill bins
+  var SOS_A = 20, SOS_B_PARAM = 20;
+  var sosWP = null; // [14][SOS_N] - win prob at each record for each skill bin
+
+  function precomputeSoS() {
+    var N = SOS_N;
+    var sk = new Float64Array(N);
+    var od = new Float64Array(N);
+    var pop = new Float64Array(N);
+    for (var i = 0; i < N; i++) {
+      sk[i] = (i + 0.5) / N;
+      od[i] = sk[i] / (1 - sk[i]);
+      pop[i] = Math.pow(sk[i], SOS_A - 1) * Math.pow(1 - sk[i], SOS_B_PARAM - 1);
+    }
+    var pSum = 0;
+    for (var i = 0; i < N; i++) pSum += pop[i];
+    for (var i = 0; i < N; i++) pop[i] /= pSum;
+
+    var mass = [];
+    sosWP = [];
+    for (var k = 0; k < 14; k++) {
+      mass.push(new Float64Array(N));
+      sosWP.push(new Float64Array(N));
+    }
+    for (var i = 0; i < N; i++) mass[0][i] = pop[i];
+
+    // Process records in topological order (w+l ascending)
+    for (var s = 0; s <= 7; s++) {
+      for (var l = 0; l <= Math.min(1, s); l++) {
+        var w = s - l;
+        if (w > 6) continue;
+        var mi = w * 2 + l;
+        var m = mass[mi];
+        var tM = 0;
+        for (var j = 0; j < N; j++) tM += m[j];
+        if (tM < 1e-30) continue;
+
+        // Bradley-Terry win prob for each skill bin against opponent pool
+        for (var i = 0; i < N; i++) {
+          var wt = 0;
+          for (var j = 0; j < N; j++) {
+            wt += m[j] * od[i] / (od[i] + od[j]);
+          }
+          sosWP[mi][i] = wt / tM;
+        }
+
+        // Flow to next records
+        for (var i = 0; i < N; i++) {
+          var mv = m[i];
+          if (mv < 1e-30) continue;
+          var p = sosWP[mi][i];
+          if (w + 1 <= 6) mass[(w + 1) * 2 + l][i] += mv * p;
+          if (l + 1 <= 1) mass[w * 2 + (l + 1)][i] += mv * (1 - p);
+        }
+      }
+    }
+  }
+
+  function calcSoSEV(pFrac) {
+    if (!sosWP) return null;
+    var N = SOS_N;
+    var idx = Math.floor(pFrac * N);
+    if (idx >= N) idx = N - 1;
+    if (idx < 0) idx = 0;
+
+    var pp = new Float64Array(14);
+    pp[0] = 1;
+    var exits = {};
+    var wrs = {};
+
+    for (var s = 0; s <= 7; s++) {
+      for (var l = 0; l <= Math.min(1, s); l++) {
+        var w = s - l;
+        if (w > 6) continue;
+        var mi = w * 2 + l;
+        if (pp[mi] < 1e-30) continue;
+        var p = sosWP[mi][idx];
+        wrs[w + ',' + l] = p;
+
+        if (w + 1 === 7) exits['7,' + l] = (exits['7,' + l] || 0) + pp[mi] * p;
+        else pp[(w + 1) * 2 + l] += pp[mi] * p;
+
+        if (l + 1 === 2) exits[w + ',2'] = (exits[w + ',2'] || 0) + pp[mi] * (1 - p);
+        else pp[w * 2 + (l + 1)] += pp[mi] * (1 - p);
+      }
+    }
+
+    var outcomes = [];
+    for (var w = 0; w <= 6; w++) outcomes.push({ wins: w, losses: 2, prob: exits[w + ',2'] || 0, prize: PRIZES[w] });
+    outcomes.push({ wins: 7, losses: 0, prob: exits['7,0'] || 0, prize: PRIZES[7] });
+    outcomes.push({ wins: 7, losses: 1, prob: exits['7,1'] || 0, prize: PRIZES[7] });
+
+    var ev = 0;
+    for (var i = 0; i < outcomes.length; i++) ev += outcomes[i].prob * outcomes[i].prize;
+    return { outcomes: outcomes, ev: ev - BUYIN, winRates: wrs };
+  }
+
+  function findSoSBreakeven() {
+    var lo = 0.30, hi = 0.95;
+    for (var i = 0; i < 100; i++) {
+      var mid = (lo + hi) / 2;
+      var r = calcSoSEV(mid);
+      if (!r || r.ev < 0) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+
+  function wpCellColor(p) {
+    if (p >= 0.5) {
+      var t = Math.min((p - 0.5) / 0.18, 1);
+      return 'rgba(16,185,129,' + (0.08 + t * 0.28).toFixed(2) + ')';
+    }
+    var t = Math.min((0.5 - p) / 0.18, 1);
+    return 'rgba(239,68,68,' + (0.08 + t * 0.28).toFixed(2) + ')';
+  }
+
+  function renderSoS(pSlider) {
+    var pFrac = pSlider / 100;
+    var sos = calcSoSEV(pFrac);
+    if (!sos) return;
+    var naive = calcEV(pFrac);
+
+    function fmtEv(v) { return (v >= 0 ? '+' : '\u2212') + '$' + Math.abs(v).toFixed(2); }
+    function evCls(v) { return v >= 0 ? 'ev-positive' : 'ev-negative'; }
+
+    // Comparison boxes
+    document.getElementById('sosNaiveEvBig').innerHTML = '<span class="' + evCls(naive) + '">' + fmtEv(naive) + '</span>';
+    document.getElementById('sosAdjEvBig').innerHTML = '<span class="' + evCls(sos.ev) + '">' + fmtEv(sos.ev) + '</span>';
+    document.getElementById('sosAdjBox').style.borderColor = sos.ev >= 0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('sosNaiveP').textContent = pSlider + '%';
+
+    // P(7 wins) comparison
+    var naiveO = calcOutcomeProbs(pFrac);
+    var naiveP7 = naiveO[7].prob + naiveO[8].prob;
+    var sosP7 = sos.outcomes[7].prob + sos.outcomes[8].prob;
+    document.getElementById('sosP7Naive').textContent = (naiveP7 * 100).toFixed(2) + '%';
+    document.getElementById('sosP7Adj').textContent = (sosP7 * 100).toFixed(2) + '%';
+
+    // Breakeven labels
+    document.getElementById('sosNaiveBE').textContent = (breakeven * 100).toFixed(1) + '%';
+    document.getElementById('sosAdjBE').textContent = (sosBreakevenVal * 100).toFixed(1) + '%';
+
+    // Win rate grid: 7 rows (0-6 wins) x 2 cols (0 losses, 1 loss)
+    var gh = '<tr><th>Wins</th><th>0 losses</th><th>1 loss</th></tr>';
+    for (var w = 0; w <= 6; w++) {
+      gh += '<tr><th>' + w + '</th>';
+      for (var l = 0; l <= 1; l++) {
+        var k = w + ',' + l;
+        var wp = sos.winRates[k];
+        if (wp !== undefined) {
+          var pct = (wp * 100).toFixed(1);
+          var delta = (wp - pFrac) * 100;
+          var ds = (delta >= 0 ? '+' : '') + delta.toFixed(1);
+          gh += '<td style="background:' + wpCellColor(wp) + '">' + pct + '%<span class="sos-delta">' + ds + '</span></td>';
+        } else {
+          gh += '<td style="color:#ddd;">&mdash;</td>';
+        }
+      }
+      gh += '</tr>';
+    }
+    document.getElementById('sosGrid').innerHTML = gh;
+  }
+
+  // ===== Init =====
+  document.getElementById('mtgBreakeven').textContent = (breakeven * 100).toFixed(1) + '%';
+
+  precomputeSoS();
+  var sosBreakevenVal = findSoSBreakeven();
+
+  var slider = document.getElementById('mtgSlider');
+  slider.addEventListener('input', function() {
+    var p = parseInt(this.value);
+    renderMtg(p);
+    renderSoS(p);
+  });
+  renderMtg(50);
+  renderSoS(50);
+  buildRefTable();
+})();
+
+
+// ==================== BACCARAT ====================
+(function() {
+  var SUITS = ['\u2660','\u2665','\u2666','\u2663']; // spade, heart, diamond, club
+  var RANKS = ['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
+  var VALUES = [1,2,3,4,5,6,7,8,9,0,0,0,0];
+
+  function dealCard() {
+    var ri = Math.floor(Math.random() * 13);
+    var si = Math.floor(Math.random() * 4);
+    return { rank: RANKS[ri], suit: SUITS[si], value: VALUES[ri], red: si === 1 || si === 2 };
+  }
+
+  function handTotal(cards) {
+    var s = 0;
+    for (var i = 0; i < cards.length; i++) s += cards[i].value;
+    return s % 10;
+  }
+
+  function cardHtml(c, isThird) {
+    var cls = 'bacc-card ' + (c.red ? 'card-red' : 'card-black') + (isThird ? ' card-third' : '');
+    return '<span class="' + cls + '"><span class="card-rank">' + c.rank + '</span><span class="card-suit">' + c.suit + '</span></span>';
+  }
+
+  // Banker drawing rules: returns true if banker should draw
+  // bTwo = banker's two-card total, p3v = player's third card value
+  function bankerDraws(bTwo, p3v) {
+    if (bTwo <= 2) return true;
+    if (bTwo === 3) return p3v !== 8;
+    if (bTwo === 4) return p3v >= 2 && p3v <= 7;
+    if (bTwo === 5) return p3v >= 4 && p3v <= 7;
+    if (bTwo === 6) return p3v === 6 || p3v === 7;
+    return false; // 7 stands
+  }
+
+  function playFullHand() {
+    var p = [dealCard(), dealCard()];
+    var b = [dealCard(), dealCard()];
+    var pTwo = handTotal(p);
+    var bTwo = handTotal(b);
+    var natural = false;
+    var playerDrew = false;
+    var bankerDrewCard = false;
+    var note = '';
+
+    if (pTwo >= 8 || bTwo >= 8) {
+      natural = true;
+      if (pTwo >= 8 && bTwo >= 8) note = 'Both naturals! Player ' + pTwo + ', Banker ' + bTwo + '.';
+      else if (pTwo >= 8) note = 'Player has a natural ' + pTwo + '.';
+      else note = 'Banker has a natural ' + bTwo + '.';
+    } else {
+      // Player third card
+      if (pTwo <= 5) {
+        p.push(dealCard());
+        playerDrew = true;
+      }
+
+      // Banker third card
+      if (!playerDrew) {
+        if (bTwo <= 5) {
+          b.push(dealCard());
+          bankerDrewCard = true;
+        }
+        note = 'Player stood (' + pTwo + '). Banker ' + (bankerDrewCard ? 'drew (had ' + bTwo + ')' : 'stood (' + bTwo + ')') + '.';
+      } else {
+        var p3v = p[2].value;
+        if (bankerDraws(bTwo, p3v)) {
+          b.push(dealCard());
+          bankerDrewCard = true;
+        }
+        note = 'Player drew (had ' + pTwo + '). Banker ' + (bankerDrewCard ? 'drew (had ' + bTwo + ', Player\u2019s 3rd was ' + p3v + ')' : 'stood (' + bTwo + ', Player\u2019s 3rd was ' + p3v + ')') + '.';
+      }
+    }
+
+    var pTotal = handTotal(p);
+    var bTotal = handTotal(b);
+    var result = pTotal > bTotal ? 'player' : bTotal > pTotal ? 'banker' : 'tie';
+    return { player: p, banker: b, pTotal: pTotal, bTotal: bTotal, result: result, natural: natural, note: note };
+  }
+
+  // Fast simulation (values only, no card objects)
+  function simHand() {
+    function rv() { var v = Math.floor(Math.random() * 13) + 1; return v >= 10 ? 0 : v; }
+    var p1 = rv(), p2 = rv(), b1 = rv(), b2 = rv();
+    var pt = (p1 + p2) % 10;
+    var bt = (b1 + b2) % 10;
+    if (pt >= 8 || bt >= 8) return pt > bt ? 'player' : bt > pt ? 'banker' : 'tie';
+    var p3 = -1;
+    if (pt <= 5) { p3 = rv(); pt = (pt + p3) % 10; }
+    if (p3 === -1) {
+      if (bt <= 5) bt = (bt + rv()) % 10;
+    } else {
+      if (bankerDraws(bt, p3)) bt = (bt + rv()) % 10;
+    }
+    return pt > bt ? 'player' : bt > pt ? 'banker' : 'tie';
+  }
+
+  // ===== Build Banker Tableau =====
+  (function buildTableau() {
+    var tbl = document.getElementById('baccTableau');
+    var html = '<tr><th></th>';
+    for (var c = 0; c <= 9; c++) html += '<th class="player-col">' + c + '</th>';
+    html += '</tr>';
+    for (var bk = 0; bk <= 7; bk++) {
+      html += '<tr><th class="banker-row">' + bk + '</th>';
+      for (var pv = 0; pv <= 9; pv++) {
+        var draws = bankerDraws(bk, pv);
+        html += '<td class="' + (draws ? 'draw-cell' : 'stand-cell') + '">' + (draws ? 'D' : 'S') + '</td>';
+      }
+      html += '</tr>';
+    }
+    tbl.innerHTML = html;
+  })();
+
+  // ===== Interactive Game =====
+  var gameStats = { hands: 0, net: 0, pWins: 0, bWins: 0, ties: 0 };
+
+  function renderHand(hand) {
+    var area = document.getElementById('baccGameArea');
+    var pCards = '', bCards = '';
+    for (var i = 0; i < hand.player.length; i++) pCards += cardHtml(hand.player[i], i === 2);
+    for (var j = 0; j < hand.banker.length; j++) bCards += cardHtml(hand.banker[j], j === 2);
+
+    area.innerHTML =
+      '<div class="bacc-hand-row">' +
+        '<span class="bacc-hand-label player-label">Player</span>' +
+        '<span class="bacc-hand-cards">' + pCards + '</span>' +
+        '<span class="bacc-hand-total" style="color:var(--a)">' + hand.pTotal + '</span>' +
+      '</div>' +
+      '<div class="bacc-hand-row">' +
+        '<span class="bacc-hand-label banker-label">Banker</span>' +
+        '<span class="bacc-hand-cards">' + bCards + '</span>' +
+        '<span class="bacc-hand-total" style="color:var(--red)">' + hand.bTotal + '</span>' +
+      '</div>';
+  }
+
+  function updateGameTally() {
+    document.getElementById('baccHands').textContent = gameStats.hands;
+    var netEl = document.getElementById('baccNet');
+    var sign = gameStats.net >= 0 ? '+' : '-';
+    netEl.textContent = sign + '$' + Math.abs(gameStats.net).toFixed(2);
+    netEl.style.color = gameStats.net >= 0 ? 'var(--green)' : 'var(--red)';
+    document.getElementById('baccPWins').textContent = gameStats.pWins;
+    document.getElementById('baccBWins').textContent = gameStats.bWins;
+    document.getElementById('baccTies').textContent = gameStats.ties;
+  }
+
+  function placeBet(bet) {
+    var hand = playFullHand();
+    gameStats.hands++;
+    if (hand.result === 'player') gameStats.pWins++;
+    else if (hand.result === 'banker') gameStats.bWins++;
+    else gameStats.ties++;
+
+    // Payout
+    var payout = 0;
+    if (bet === 'player') {
+      if (hand.result === 'player') payout = 10;
+      else if (hand.result === 'banker') payout = -10;
+      // tie pushes
+    } else if (bet === 'banker') {
+      if (hand.result === 'banker') payout = 9.50; // 10 - 5% commission
+      else if (hand.result === 'player') payout = -10;
+      // tie pushes
+    } else { // tie
+      if (hand.result === 'tie') payout = 80;
+      else payout = -10;
+    }
+    gameStats.net += payout;
+
+    renderHand(hand);
+    document.getElementById('baccNote').textContent = hand.note;
+
+    var resultLabel = hand.result === 'player' ? 'Player wins!' : hand.result === 'banker' ? 'Banker wins!' : 'Tie!';
+    var resultColor = hand.result === 'player' ? 'var(--a)' : hand.result === 'banker' ? 'var(--red)' : 'var(--gray-dark)';
+    var payoutStr = payout > 0 ? '+$' + payout.toFixed(2) : payout < 0 ? '-$' + Math.abs(payout).toFixed(2) : 'Push';
+    var payoutColor = payout > 0 ? 'var(--green)' : payout < 0 ? 'var(--red)' : '#888';
+
+    document.getElementById('baccResultMsg').innerHTML =
+      '<strong style="color:' + resultColor + '">' + resultLabel + '</strong> &nbsp; ' +
+      'You bet ' + bet.charAt(0).toUpperCase() + bet.slice(1) + ': <strong style="color:' + payoutColor + '">' + payoutStr + '</strong>';
+
+    document.getElementById('baccGameBtns').innerHTML = '<button class="green" id="baccDealAgain">Deal Again</button>';
+    document.getElementById('baccDealAgain').addEventListener('click', resetDeal);
+
+    updateGameTally();
+  }
+
+  function resetDeal() {
+    document.getElementById('baccGameArea').innerHTML = '';
+    document.getElementById('baccNote').textContent = '';
+    document.getElementById('baccResultMsg').textContent = 'Place your bet.';
+    document.getElementById('baccGameBtns').innerHTML = '';
+  }
+
+  document.getElementById('baccBetPlayer').addEventListener('click', function() { placeBet('player'); });
+  document.getElementById('baccBetBanker').addEventListener('click', function() { placeBet('banker'); });
+  document.getElementById('baccBetTie').addEventListener('click', function() { placeBet('tie'); });
+
+  // ===== Simulation =====
+  var sim = { total: 0, pNet: 0, bNet: 0, tNet: 0 };
+
+  function runBaccSim(n) {
+    var done = 0;
+    function step() {
+      var chunk = Math.min(500, n - done);
+      for (var i = 0; i < chunk; i++) {
+        var result = simHand();
+        sim.total++;
+        if (result === 'player') {
+          sim.pNet += 1; sim.bNet -= 1; sim.tNet -= 1;
+        } else if (result === 'banker') {
+          sim.pNet -= 1; sim.bNet += 0.95; sim.tNet -= 1;
+        } else {
+          // tie: player/banker push, tie wins 8
+          sim.tNet += 8;
+        }
+      }
+      done += chunk;
+      updateSimDisplay();
+      if (done < n) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function updateSimDisplay() {
+    document.getElementById('bsTotal').textContent = sim.total;
+    var maxLoss = Math.max(Math.abs(sim.pNet), Math.abs(sim.bNet), Math.abs(sim.tNet), 1);
+
+    function updateRow(id, net) {
+      var pct = sim.total ? (net / sim.total * 100) : 0;
+      var sign = net >= 0 ? '+' : '-';
+      document.getElementById(id + 'Val').textContent = sign + '$' + Math.abs(net).toFixed(0) + ' (' + pct.toFixed(2) + '%)';
+      // Bar width: scale relative to max loss, show in one direction
+      var barPct = Math.abs(net) / maxLoss * 100;
+      document.getElementById(id + 'Bar').style.width = barPct.toFixed(1) + '%';
+    }
+
+    updateRow('bsPlayer', sim.pNet);
+    updateRow('bsBanker', sim.bNet);
+    updateRow('bsTie', sim.tNet);
+  }
+
+  function resetBaccSim() {
+    sim = { total: 0, pNet: 0, bNet: 0, tNet: 0 };
+    updateSimDisplay();
+  }
+
+  document.getElementById('baccSim100').addEventListener('click', function() { runBaccSim(100); });
+  document.getElementById('baccSim1k').addEventListener('click', function() { runBaccSim(1000); });
+  document.getElementById('baccSim10k').addEventListener('click', function() { runBaccSim(10000); });
+  document.getElementById('baccSimReset').addEventListener('click', resetBaccSim);
+})();
 
 </script>
 </body>
