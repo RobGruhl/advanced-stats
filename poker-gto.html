@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Texas Hold'em: The GTO Edge</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #1a1a1a;
+    background: #fff;
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+
+  :root {
+    --a: #3b82f6;
+    --a-light: #93bbfd;
+    --b: #f59e0b;
+    --b-light: #fcd68d;
+    --gray: #d1d5db;
+    --gray-dark: #6b7280;
+    --green: #10b981;
+    --green-light: #d1fae5;
+    --red: #ef4444;
+    --red-light: #fee2e2;
+    --purple: #8b5cf6;
+    --felt: #1a6b3c;
+    --felt-light: #228b4f;
+    --felt-border: #145530;
+  }
+
+  h1 { font-size: 1.6rem; margin-bottom: 4px; }
+  .subtitle { color: #666; margin-bottom: 32px; font-size: 0.95rem; }
+  .section { margin-bottom: 40px; }
+  h2 { font-size: 1.15rem; margin-bottom: 12px; color: #333; }
+
+  button {
+    padding: 8px 18px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  button:hover { background: #f3f4f6; }
+  button:active { background: #e5e7eb; transform: scale(0.97); }
+  button.primary { background: var(--green); color: #fff; border-color: var(--green); }
+  button.primary:hover { background: #059669; }
+
+  /* ===== Controls ===== */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .control-group { display: flex; flex-direction: column; gap: 4px; }
+  .control-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .slider-row { display: flex; align-items: center; gap: 8px; }
+  .slider-row input[type="range"] { width: 160px; }
+  .slider-value {
+    font-size: 0.85rem;
+    color: var(--gray-dark);
+    min-width: 100px;
+  }
+  .btn-group { display: flex; gap: 8px; align-items: flex-end; padding-top: 16px; }
+
+  /* ===== Poker Table ===== */
+  .table-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    height: 320px;
+    margin: 0 auto 32px;
+  }
+  .felt {
+    position: absolute;
+    top: 40px;
+    left: 60px;
+    right: 60px;
+    bottom: 40px;
+    background: var(--felt);
+    border-radius: 50%;
+    border: 6px solid var(--felt-border);
+    box-shadow: 0 0 0 3px #0d3d1f, 0 4px 20px rgba(0,0,0,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  .pot-display {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .hand-display {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    margin-top: 2px;
+  }
+
+  .seat {
+    position: absolute;
+    width: 80px;
+    text-align: center;
+    transition: opacity 0.2s;
+  }
+  .seat-chip {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin: 0 auto 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+    border: 2px solid rgba(255,255,255,0.3);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .seat-chip.hero { background: var(--a); border-color: rgba(255,255,255,0.5); }
+  .seat-chip.opp { background: var(--gray-dark); }
+  .seat-chip.folded { background: #999; opacity: 0.5; transform: scale(0.85); }
+  .seat-chip.active { box-shadow: 0 0 0 3px var(--b); }
+  .seat-chip.busted { background: var(--red); opacity: 0.6; }
+  .seat-name {
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .seat-stack {
+    font-size: 0.65rem;
+    color: #666;
+  }
+  .seat-type {
+    font-size: 0.6rem;
+    color: #999;
+    font-style: italic;
+  }
+
+  /* Seat positions around the oval */
+  .seat-0 { bottom: -10px; left: 50%; transform: translateX(-50%); }
+  .seat-1 { bottom: 10px; left: 10px; }
+  .seat-2 { top: 50%; left: -20px; transform: translateY(-50%); }
+  .seat-3 { top: 10px; left: 10px; }
+  .seat-4 { top: -10px; left: 50%; transform: translateX(-50%); }
+  .seat-5 { top: 10px; right: 10px; }
+  .seat-6 { top: 50%; right: -20px; transform: translateY(-50%); }
+  .seat-7 { bottom: 10px; right: 10px; }
+  .seat-8 { bottom: -10px; right: 15%; }
+
+  /* ===== Bankroll Chart ===== */
+  .chart-container {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    margin-bottom: 32px;
+  }
+  .chart-container canvas {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ===== Stats Grid ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  @media (max-width: 500px) { .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat-card {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    text-align: center;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+  }
+  .stat-value.positive { color: var(--green); }
+  .stat-value.negative { color: var(--red); }
+  .stat-label {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-top: 2px;
+  }
+
+  /* ===== Hand Log ===== */
+  .hand-log {
+    max-height: 140px;
+    overflow-y: auto;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: #555;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+  .hand-log .win { color: var(--green); font-weight: 600; }
+  .hand-log .loss { color: var(--red); font-weight: 600; }
+
+  /* ===== Insight Box ===== */
+  .insight {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.65;
+  }
+  .insight strong { color: var(--felt); }
+
+  /* ===== Seat Config Grid ===== */
+  .seat-config {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 600px) { .seat-config { grid-template-columns: repeat(2, 1fr); } }
+  .seat-cfg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+  }
+  .seat-cfg .cfg-name {
+    font-weight: 600;
+    color: #555;
+    min-width: 36px;
+  }
+  .seat-cfg select {
+    flex: 1;
+    padding: 4px 6px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.78rem;
+    background: #fff;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+
+<h1>Texas Hold'em: The GTO Edge</h1>
+<p class="subtitle">Watch a GTO player's bankroll evolve over a 3-hour $0.50/$1 cash game session against opponents of varying skill.</p>
+
+<div class="section">
+  <div class="controls">
+    <div class="control-group">
+      <label>Table Difficulty</label>
+      <div class="slider-row">
+        <input type="range" id="diffSlider" min="10" max="90" value="50" step="5">
+        <span class="slider-value" id="diffLabel">Average Recs</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label>Speed</label>
+      <div class="slider-row">
+        <input type="range" id="speedSlider" min="0" max="4" value="2" step="1">
+        <span class="slider-value" id="speedLabel">Normal</span>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button id="newBtn">New Session</button>
+      <button id="playBtn" class="primary">Play</button>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Seat Setup</h2>
+  <div class="seat-config" id="seatConfig"></div>
+</div>
+
+<div class="section">
+  <h2>The Table</h2>
+  <div class="table-container">
+    <div class="felt">
+      <div class="pot-display" id="potDisplay">Pot: $0.00</div>
+      <div class="hand-display" id="handDisplay">Hand #0</div>
+    </div>
+    <div id="seats"></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Bankroll</h2>
+  <div class="chart-container">
+    <canvas id="bankrollChart"></canvas>
+  </div>
+</div>
+
+<div class="section">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value" id="statHands">0</div><div class="stat-label">Hands Played</div></div>
+    <div class="stat-card"><div class="stat-value" id="statTime">0:00</div><div class="stat-label">Session Time</div></div>
+    <div class="stat-card"><div class="stat-value" id="statStack">$20.00</div><div class="stat-label">Current Stack</div></div>
+    <div class="stat-card"><div class="stat-value" id="statPL">$0.00</div><div class="stat-label">Profit / Loss</div></div>
+    <div class="stat-card"><div class="stat-value" id="statBBHr">0.0</div><div class="stat-label">BB / Hour</div></div>
+    <div class="stat-card"><div class="stat-value" id="statBB100">0.0</div><div class="stat-label">BB / 100</div></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>Hand Log</h2>
+  <div class="hand-log" id="handLog">Session not started.</div>
+</div>
+
+<div class="section">
+  <div class="insight">
+    <strong>What is GTO?</strong> Game Theory Optimal play makes mathematically balanced decisions &mdash;
+    calling when pot odds justify it, raising with a balanced range, and bluffing at the right frequency.
+    Against perfect opponents, GTO breaks even. Against opponents who deviate, GTO profits from their systematic errors.<br><br>
+    <strong>The player types:</strong><br>
+    <strong>Regs</strong> &mdash; Regulars who study the game and grind out a profit. Tough regs are genuinely good and hard to beat.<br>
+    <strong>Recs</strong> &mdash; Recreational players here for fun. Frequent mistakes, your typical casual Friday night player.<br>
+    <strong>Whales</strong> &mdash; The biggest losing players. Call way too much and don't care about losing. "Whale watching" = seeking these tables.<br>
+    <strong>Nits</strong> &mdash; Ultra-tight, only play premium hands. Steal their blinds all day, fold when they bet big.<br>
+    <strong>Calling Stations</strong> &mdash; Call too often, rarely fold. Hard to bluff, but you print money value betting against them.<br>
+    <strong>Maniacs</strong> &mdash; Raise and re-raise constantly with junk. Profitable if you're patient, but the variance is wild.<br><br>
+    <strong>The edge is small but real.</strong> Even against average recs, a GTO player
+    might earn only ~8 BB/100 hands &mdash; roughly $2/hour at this stake. Use the seat dropdowns to build
+    your own table, or leave them on "Random" and use the difficulty slider. Hit "New Session" repeatedly to see
+    variance in action &mdash; even skilled players have losing sessions.
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // === Constants ===
+  const SB = 0.5, BB = 1.0, BUY_IN = 20, MAX_BUY = 50;
+  const TOTAL_HANDS = 81; // ~27 hands/hr * 3 hrs
+  const NUM_PLAYERS = 9;
+  const ARCHETYPES = ['Random','Reg','Rec','Whale','Nit','Call Stn','Maniac'];
+  const NAMES = ['Hero','Vlad','Miko','Chen','Russ','Dana','Javi','Leah','Niko'];
+  const SPEED_MAP = [500, 300, 150, 50, 0]; // ms per hand
+  const SPEED_LABELS = ['Slow','Relaxed','Normal','Fast','Instant'];
+  // When "Random" is chosen, pick from these weighted by difficulty
+  const RANDOM_POOL_SOFT = ['Rec','Rec','Whale','Call Stn','Maniac','Rec'];
+  const RANDOM_POOL_MID  = ['Reg','Rec','Rec','Nit','Call Stn','Maniac'];
+  const RANDOM_POOL_HARD = ['Reg','Reg','Reg','Nit','Reg','Rec'];
+
+  // === DOM refs ===
+  const diffSlider = document.getElementById('diffSlider');
+  const diffLabel = document.getElementById('diffLabel');
+  const speedSlider = document.getElementById('speedSlider');
+  const speedLabel = document.getElementById('speedLabel');
+  const newBtn = document.getElementById('newBtn');
+  const playBtn = document.getElementById('playBtn');
+  const seatsEl = document.getElementById('seats');
+  const potDisplay = document.getElementById('potDisplay');
+  const handDisplay = document.getElementById('handDisplay');
+  const canvas = document.getElementById('bankrollChart');
+  const ctx = canvas.getContext('2d');
+  const handLog = document.getElementById('handLog');
+  const seatConfig = document.getElementById('seatConfig');
+
+  // Build seat config dropdowns (seats 1-8, seat 0 is Hero)
+  (function buildSeatConfig() {
+    for (let i = 1; i < NUM_PLAYERS; i++) {
+      const div = document.createElement('div');
+      div.className = 'seat-cfg';
+      div.innerHTML = '<span class="cfg-name">' + NAMES[i] + '</span>' +
+        '<select id="seatType' + i + '">' +
+        ARCHETYPES.map(a => '<option value="' + a + '">' + a + '</option>').join('') +
+        '</select>';
+      seatConfig.appendChild(div);
+    }
+  })();
+
+  // === State ===
+  let players = [];
+  let handNum = 0;
+  let bankrollHistory = [];
+  let running = false;
+  let timer = null;
+  let sessionOver = false;
+  let buttonPos = 0; // dealer button
+
+  // === Helpers ===
+  function rand() { return Math.random(); }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function fmt(v) { return (v >= 0 ? '$' : '-$') + Math.abs(v).toFixed(2); }
+  function fmtSigned(v) { return (v >= 0 ? '+$' : '-$') + Math.abs(v).toFixed(2); }
+
+  function getDiffLabel(val) {
+    if (val <= 20) return 'Tough Regs';
+    if (val <= 35) return 'Mixed Table';
+    if (val <= 60) return 'Average Recs';
+    if (val <= 75) return 'Soft Game';
+    return 'Whale Watching';
+  }
+
+  // === Archetype behavior modifiers ===
+  // Each archetype has biases that affect fold/call/raise decisions.
+  // Leak factor = how far from GTO. Bias = direction of errors.
+  //
+  // Reg:     Studies the game, few leaks. Small deviations, balanced play.
+  // Rec:     Casual player. Calls a bit much, doesn't bluff enough, moderate errors.
+  // Whale:   Biggest loser. Calls way too much, plays too many hands, huge leaks.
+  // Nit:     Ultra-tight. Folds everything marginal, only plays premiums. Easy to steal from.
+  // Call Stn: Never folds. Chases draws, pays off value bets. Hard to bluff, easy to value-bet.
+  // Maniac:  Raises everything. Creates huge pots with junk. High variance opponent.
+  function archetypeBias(type) {
+    switch(type) {
+      case 'Reg':       return { foldBias: -0.04, callBias: 0.15, raiseBias: 0.02, bluffFreq: 0.10 };
+      case 'Rec':       return { foldBias: -0.05, callBias: 0.08, raiseBias: -0.03, bluffFreq: 0.06 };
+      case 'Whale':     return { foldBias: -0.2, callBias: 0.15, raiseBias: 0.0, bluffFreq: 0.12 };
+      case 'Nit':       return { foldBias: 0.38, callBias: 0.30, raiseBias: -0.05, bluffFreq: 0.01 };
+      case 'Call Stn':  return { foldBias: -0.20, callBias: 0.15, raiseBias: -0.1, bluffFreq: 0.02 };
+      case 'Maniac':    return { foldBias: -0.15, callBias: -0.05, raiseBias: 0.50, bluffFreq: 0.4 };
+      default:          return { foldBias: 0, callBias: 0, raiseBias: 0, bluffFreq: 0.1 };
+    }
+  }
+
+  // Base leak per archetype (how far from optimal). Difficulty slider scales this.
+  function baseLeak(type) {
+    switch(type) {
+      case 'Reg': return 0.50; case 'Rec': return 0.28; case 'Whale': return 0.25;
+      case 'Nit': return 0.90; case 'Call Stn': return 0.40; case 'Maniac': return 0.10;
+      default: return 0.3;
+    }
+  }
+
+  // Resolve "Random" to a concrete type based on difficulty
+  function resolveType(selected, diffVal) {
+    if (selected !== 'Random') return selected;
+    const pool = diffVal <= 25 ? RANDOM_POOL_HARD :
+                 diffVal >= 70 ? RANDOM_POOL_SOFT : RANDOM_POOL_MID;
+    return pool[Math.floor(rand() * pool.length)];
+  }
+
+  // Determine pot size in BB using target distribution:
+  // 70% at 2-4 BB, 20% at 5-8 BB, 8% at 9-20 BB, 2% at 20+ BB
+  // Modulated by hand dynamics (strong hands / maniacs shift distribution up)
+  function determinePotBB(activeList, strengths, players) {
+    const strongCount = activeList.filter(i => strengths[i] > 0.85).length;
+    const hasManiac = activeList.some(i => i > 0 && players[i].type === 'Maniac');
+
+    const r = rand();
+    let basePotBB;
+    if (r < 0.70) {
+      basePotBB = 2 + rand() * 2;        // 2-4 BB
+    } else if (r < 0.90) {
+      basePotBB = 5 + rand() * 3;        // 5-8 BB
+    } else if (r < 0.98) {
+      basePotBB = 9 + rand() * 11;       // 9-20 BB
+    } else {
+      basePotBB = 20 + rand() * 15;      // 20-35 BB
+    }
+
+    let mult = 1.0;
+    if (strongCount >= 2) mult += 0.3;
+    if (hasManiac) mult += 0.50;
+    if (strongCount === 0) mult -= 0.15;
+
+    return Math.max(1.5, basePotBB * mult);
+  }
+
+  // === Initialize session ===
+  function initSession() {
+    if (timer) clearTimeout(timer);
+    running = false;
+    sessionOver = false;
+    playBtn.textContent = 'Play';
+    handNum = 0;
+    buttonPos = Math.floor(rand() * NUM_PLAYERS);
+
+    const diffVal = parseInt(diffSlider.value);
+    // Difficulty slider scales leak: low = opponents play well, high = opponents play badly
+    const leakScale = clamp(diffVal / 50, 0.3, 1.8); // 0.3x at tough, 1.8x at whale
+
+    players = [];
+    for (let i = 0; i < NUM_PLAYERS; i++) {
+      const isHero = i === 0;
+      let type;
+      if (isHero) {
+        type = 'GTO';
+      } else {
+        const selected = document.getElementById('seatType' + i).value;
+        type = resolveType(selected, diffVal);
+      }
+      const playerLeak = isHero ? 0 : clamp(baseLeak(type) * leakScale + (rand() - 0.5) * 0.08, 0.05, 0.95);
+      players.push({
+        name: NAMES[i],
+        type: type,
+        stack: BUY_IN,
+        leak: playerLeak,
+        bias: isHero ? { foldBias: 0, callBias: 0, raiseBias: 0, bluffFreq: 0.1 } : archetypeBias(type),
+        folded: false,
+        seatIdx: i,
+        totalBuyins: BUY_IN
+      });
+    }
+
+    bankrollHistory = [BUY_IN];
+    handLog.innerHTML = 'Session ready. Click Play to begin.';
+    renderSeats();
+    potDisplay.textContent = 'Pot: $0.00';
+    handDisplay.textContent = 'Hand #0';
+    drawChart();
+    updateStats();
+  }
+
+  // === Render seats ===
+  function renderSeats() {
+    seatsEl.innerHTML = '';
+    players.forEach((p, i) => {
+      const div = document.createElement('div');
+      div.className = 'seat seat-' + i;
+      const chipClass = i === 0 ? 'hero' : 'opp';
+      const foldClass = p.folded ? ' folded' : '';
+      const bustClass = p.stack <= 0 ? ' busted' : '';
+      const dealerMark = i === buttonPos ? ' [D]' : '';
+      const initials = p.name.slice(0, 2).toUpperCase();
+      div.innerHTML =
+        '<div class="seat-chip ' + chipClass + foldClass + bustClass + '">' + initials + '</div>' +
+        '<div class="seat-name">' + p.name + dealerMark + '</div>' +
+        '<div class="seat-stack">' + fmt(p.stack) + '</div>' +
+        '<div class="seat-type">' + p.type + '</div>';
+      seatsEl.appendChild(div);
+    });
+  }
+
+  // === Simulate one hand ===
+  // Uses an "outcome model": determines pot size class, then resolves winner.
+  // This avoids the compounding pot-inflation bug from per-street simulation.
+  function simulateHand() {
+    handNum++;
+    buttonPos = (buttonPos + 1) % NUM_PLAYERS;
+
+    players.forEach(p => { p.folded = p.stack <= 0; });
+
+    const sbIdx = (buttonPos + 1) % NUM_PLAYERS;
+    const bbIdx = (buttonPos + 2) % NUM_PLAYERS;
+
+    // Deal hand strengths
+    const strengths = players.map((p, i) => p.folded ? 0 : rand());
+
+    // Preflop selection (VPIP filter)
+    const vpip = { GTO: 0.24, Reg: 0.22, Rec: 0.38, Whale: 0.48, Nit: 0.10, 'Call Stn': 0.42, Maniac: 0.40 };
+    let activeList = [];
+    players.forEach((p, i) => {
+      if (p.folded) return;
+      if (i === sbIdx || i === bbIdx) { activeList.push(i); return; }
+      const threshold = vpip[p.type] || 0.3;
+      if (strengths[i] >= (1 - threshold)) {
+        activeList.push(i);
+      } else {
+        p.folded = true;
+      }
+    });
+
+    // Hero folds preflop? Only pay blind if in SB/BB position
+    const heroInHand = activeList.includes(0);
+    const heroInBlind = (0 === sbIdx || 0 === bbIdx);
+    let blindCost = 0;
+    if (0 === sbIdx) blindCost = SB;
+    if (0 === bbIdx) blindCost = BB;
+
+    if (!heroInHand) {
+      // Hero folded preflop — lose blind if applicable
+      players[0].stack -= blindCost;
+      // Simulate the rest of the hand among remaining players (just move chips around)
+      resolveNonHeroHand(activeList, strengths, sbIdx, bbIdx);
+      bankrollHistory.push(players[0].stack);
+      appendLog('Hand #' + handNum + ': Hero folded. Stack: ' + fmt(players[0].stack));
+      checkEndConditions();
+      return;
+    }
+
+    // === Hero is in the hand — fair-share investment model ===
+    const numActive = activeList.length;
+    const heroStrength = strengths[0];
+
+    // Determine pot size using distribution model
+    const potBB = determinePotBB(activeList, strengths, players);
+    const potDollars = potBB * BB;
+
+    // Fair share: each active player invests pot / numActive
+    const fairShare = potDollars / numActive;
+
+    // Rank hero strength among active players
+    const activeStrengths = activeList.map(i => strengths[i]).sort((a, b) => a - b);
+    const heroRank = activeStrengths.filter(s => s <= heroStrength).length;
+    const heroPercentile = heroRank / numActive;
+
+    // Hero's GTO edge: invest less when weak, more when strong
+    let heroEdgeMult;
+    if (heroPercentile > 0.7) {
+      heroEdgeMult = 1.0 + 0.08 + rand() * 0.04; // 1.08-1.12
+    } else if (heroPercentile > 0.4) {
+      heroEdgeMult = 0.97 + rand() * 0.06; // 0.97-1.03
+    } else {
+      heroEdgeMult = 0.84 + rand() * 0.04; // 0.84-0.88
+    }
+
+    let heroInvested = fairShare * heroEdgeMult;
+    heroInvested = Math.max(heroInvested, blindCost);
+    heroInvested = Math.min(heroInvested, players[0].stack);
+
+    // Determine winner: best strength wins
+    let winnerId = activeList[0], bestStr = -1;
+    for (const idx of activeList) {
+      if (strengths[idx] > bestStr) { bestStr = strengths[idx]; winnerId = idx; }
+    }
+
+    // Opponent investments: fair share + leak-driven errors
+    let actualPot = heroInvested;
+
+    for (const idx of activeList) {
+      if (idx === 0) continue;
+      const p = players[idx];
+      const str = strengths[idx];
+      const leak = p.leak;
+      const bias = p.bias;
+
+      let oppEdgeMult;
+      const oppRank = activeStrengths.filter(s => s <= str).length;
+      const oppPercentile = oppRank / numActive;
+
+      if (oppPercentile > 0.7) {
+        oppEdgeMult = 1.0 + 0.05 + rand() * 0.08;
+      } else if (oppPercentile > 0.4) {
+        oppEdgeMult = 1.0 + leak * 0.12 + Math.max(0, bias.callBias) * 0.08;
+      } else {
+        oppEdgeMult = 0.85 + leak * 0.25 + Math.max(0, bias.callBias) * 0.10;
+      }
+
+      let oppInvest = fairShare * oppEdgeMult;
+      if (idx === sbIdx) oppInvest = Math.max(oppInvest, SB);
+      if (idx === bbIdx) oppInvest = Math.max(oppInvest, BB);
+      oppInvest = Math.min(oppInvest, p.stack);
+
+      players[idx].stack -= oppInvest;
+      actualPot += oppInvest;
+    }
+
+    // Deduct hero investment and award pot
+    players[0].stack -= heroInvested;
+    players[winnerId].stack += actualPot;
+
+    // Rebuy opponents
+    players.forEach((p, i) => {
+      if (i === 0) return;
+      if (p.stack < BB) { p.stack = BUY_IN; p.totalBuyins += BUY_IN; }
+    });
+
+    // Mark folds for display
+    players.forEach((p, i) => { if (!activeList.includes(i)) p.folded = true; });
+
+    bankrollHistory.push(players[0].stack);
+
+    // Log
+    const heroWon = winnerId === 0;
+    let logLine;
+    if (heroWon) {
+      logLine = '<span class="win">Hand #' + handNum + ': Hero wins ' + fmt(actualPot) + ' (invested ' + fmt(heroInvested) + '). Stack: ' + fmt(players[0].stack) + '</span>';
+    } else {
+      logLine = '<span class="loss">Hand #' + handNum + ': Hero loses ' + fmt(heroInvested) + ' (pot ' + fmt(actualPot) + '). Stack: ' + fmt(players[0].stack) + '</span>';
+    }
+    appendLog(logLine);
+    checkEndConditions();
+  }
+
+  // Resolve a hand that Hero isn't in — just redistribute chips among opponents
+  function resolveNonHeroHand(activeList, strengths, sbIdx, bbIdx) {
+    if (activeList.length < 2) return;
+    // Small pot among opponents
+    const potBB = 2 + rand() * 4;
+    let winnerId = activeList[0], bestStr = -1;
+    for (const idx of activeList) {
+      if (strengths[idx] > bestStr) { bestStr = strengths[idx]; winnerId = idx; }
+    }
+    // Each non-hero player puts in a share
+    let pot = 0;
+    for (const idx of activeList) {
+      if (idx === 0) continue;
+      const amt = Math.min(potBB * BB / activeList.length, players[idx].stack);
+      players[idx].stack -= amt;
+      pot += amt;
+    }
+    players[winnerId].stack += pot;
+    // Rebuy busted opponents
+    players.forEach((p, i) => {
+      if (i === 0) return;
+      if (p.stack < BB) { p.stack = BUY_IN; p.totalBuyins += BUY_IN; }
+    });
+  }
+
+  function checkEndConditions() {
+    const heroBusted = players[0].stack < BB;
+    if (heroBusted) {
+      sessionOver = true;
+      appendLog('<span class="loss"><strong>Hero busted! Session over after ' + handNum + ' hands.</strong></span>');
+    }
+    if (handNum >= TOTAL_HANDS && !sessionOver) {
+      sessionOver = true;
+      const pl = players[0].stack - BUY_IN;
+      const cls = pl >= 0 ? 'win' : 'loss';
+      appendLog('<span class="' + cls + '"><strong>Session complete! ' + handNum + ' hands, P/L: ' + fmtSigned(pl) + '</strong></span>');
+    }
+    potDisplay.textContent = 'Hand #' + handNum;
+    handDisplay.textContent = fmt(players[0].stack);
+    renderSeats();
+    drawChart();
+    updateStats();
+  }
+
+  // === Log ===
+  function appendLog(html) {
+    if (handLog.textContent === 'Session not started.' || handLog.textContent === 'Session ready. Click Play to begin.') {
+      handLog.innerHTML = '';
+    }
+    handLog.innerHTML = html + '<br>' + handLog.innerHTML;
+    // Keep only last 50 entries
+    const lines = handLog.querySelectorAll('br');
+    if (lines.length > 50) {
+      while (handLog.childNodes.length > 100) {
+        handLog.removeChild(handLog.lastChild);
+      }
+    }
+  }
+
+  // === Draw bankroll chart ===
+  function drawChart() {
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const W = rect.width, H = rect.height;
+
+    ctx.clearRect(0, 0, W, H);
+
+    const pad = { top: 20, right: 20, bottom: 30, left: 50 };
+    const plotW = W - pad.left - pad.right;
+    const plotH = H - pad.top - pad.bottom;
+
+    if (bankrollHistory.length < 2) {
+      // Draw empty chart with axes
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(pad.left, pad.top, plotW, plotH);
+      return;
+    }
+
+    const data = bankrollHistory;
+    const minY = Math.min(0, ...data) - 2;
+    const maxY = Math.max(BUY_IN * 2, ...data) + 2;
+    const xMax = Math.max(TOTAL_HANDS, data.length - 1);
+
+    function x(i) { return pad.left + (i / xMax) * plotW; }
+    function y(v) { return pad.top + plotH - ((v - minY) / (maxY - minY)) * plotH; }
+
+    // Grid
+    ctx.strokeStyle = '#f3f4f6';
+    ctx.lineWidth = 1;
+    const yTicks = 5;
+    const yStep = (maxY - minY) / yTicks;
+    ctx.fillStyle = '#999';
+    ctx.font = '11px -apple-system, sans-serif';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= yTicks; i++) {
+      const val = minY + i * yStep;
+      const yy = y(val);
+      ctx.beginPath();
+      ctx.moveTo(pad.left, yy);
+      ctx.lineTo(pad.left + plotW, yy);
+      ctx.stroke();
+      ctx.fillText('$' + val.toFixed(0), pad.left - 6, yy + 4);
+    }
+
+    // X-axis labels (hours)
+    ctx.textAlign = 'center';
+    for (let h = 0; h <= 3; h++) {
+      const hand = h * 27;
+      ctx.fillText(h + 'h', x(hand), H - 6);
+    }
+
+    // Buy-in reference line
+    ctx.strokeStyle = '#d1d5db';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, y(BUY_IN));
+    ctx.lineTo(pad.left + plotW, y(BUY_IN));
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Zero line
+    if (minY < 0) {
+      ctx.strokeStyle = '#fca5a5';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y(0));
+      ctx.lineTo(pad.left + plotW, y(0));
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Bankroll line
+    const current = data[data.length - 1];
+    const isProfit = current >= BUY_IN;
+    ctx.strokeStyle = isProfit ? '#10b981' : '#ef4444';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let i = 0; i < data.length; i++) {
+      const px = x(i), py = y(data[i]);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.stroke();
+
+    // Fill under line
+    ctx.globalAlpha = 0.08;
+    ctx.fillStyle = isProfit ? '#10b981' : '#ef4444';
+    ctx.lineTo(x(data.length - 1), y(BUY_IN));
+    ctx.lineTo(x(0), y(BUY_IN));
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 1;
+
+    // Current value dot
+    ctx.fillStyle = isProfit ? '#10b981' : '#ef4444';
+    ctx.beginPath();
+    ctx.arc(x(data.length - 1), y(current), 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // === Update stats ===
+  function updateStats() {
+    const hero = players[0];
+    const pl = hero.stack - BUY_IN;
+    const hours = handNum / 27;
+    const bbHr = hours > 0 ? (pl / BB) / hours : 0;
+    const bb100 = handNum > 0 ? (pl / BB) / handNum * 100 : 0;
+
+    document.getElementById('statHands').textContent = handNum;
+    document.getElementById('statTime').textContent = Math.floor(hours) + ':' + String(Math.floor((hours % 1) * 60)).padStart(2, '0');
+
+    document.getElementById('statStack').textContent = fmt(hero.stack);
+
+    const plEl = document.getElementById('statPL');
+    plEl.textContent = fmtSigned(pl);
+    plEl.className = 'stat-value ' + (pl >= 0 ? 'positive' : 'negative');
+
+    const bbHrEl = document.getElementById('statBBHr');
+    bbHrEl.textContent = bbHr.toFixed(1);
+    bbHrEl.className = 'stat-value ' + (bbHr >= 0 ? 'positive' : 'negative');
+
+    const bb100El = document.getElementById('statBB100');
+    bb100El.textContent = bb100.toFixed(1);
+    bb100El.className = 'stat-value ' + (bb100 >= 0 ? 'positive' : 'negative');
+  }
+
+  // === Game loop ===
+  function tick() {
+    if (!running || sessionOver) {
+      running = false;
+      playBtn.textContent = 'Play';
+      return;
+    }
+    simulateHand();
+    if (sessionOver || handNum >= TOTAL_HANDS) {
+      running = false;
+      playBtn.textContent = 'Play';
+      return;
+    }
+    const speed = SPEED_MAP[parseInt(speedSlider.value)];
+    if (speed === 0) {
+      // Instant: run all remaining
+      while (!sessionOver && handNum < TOTAL_HANDS) simulateHand();
+      running = false;
+      playBtn.textContent = 'Play';
+    } else {
+      timer = setTimeout(tick, speed);
+    }
+  }
+
+  // === Event listeners ===
+  diffSlider.addEventListener('input', function() {
+    diffLabel.textContent = getDiffLabel(parseInt(this.value));
+  });
+
+  speedSlider.addEventListener('input', function() {
+    speedLabel.textContent = SPEED_LABELS[parseInt(this.value)];
+  });
+
+  newBtn.addEventListener('click', function() {
+    initSession();
+  });
+
+  playBtn.addEventListener('click', function() {
+    if (sessionOver) {
+      initSession();
+      return;
+    }
+    if (running) {
+      running = false;
+      if (timer) clearTimeout(timer);
+      playBtn.textContent = 'Play';
+    } else {
+      running = true;
+      playBtn.textContent = 'Pause';
+      tick();
+    }
+  });
+
+  // Resize chart on window resize
+  window.addEventListener('resize', drawChart);
+
+  // Init
+  initSession();
+})();
+</script>
+</body>
+</html>
